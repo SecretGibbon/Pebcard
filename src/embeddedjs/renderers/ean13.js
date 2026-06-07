@@ -28,7 +28,7 @@ export function drawEAN13(render, data) {
   const digits = data.replace(/\D/g, '');
   if (digits.length !== 12 && digits.length !== 13) {
     render.drawText("EAN-13: need 12-13 digits", render.Font("Gothic-Bold", 14),
-      black, 4, render.height / 2, render.width - 8, 20, 0);
+      black, 4, Math.floor(render.height / 2), render.width - 8, 20, 0);
     return;
   }
 
