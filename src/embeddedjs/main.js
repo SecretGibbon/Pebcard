@@ -93,3 +93,51 @@ function redraw() {
 }
 
 redraw();
+
+new Button({
+  types: ["select", "up", "down", "back"],
+  onPush(down, type) {
+    if (!down) return;
+    handleButton(type);
+  }
+});
+
+function handleButton(type) {
+  if (state.screen === "barcode") {
+    if (type === "back") {
+      state.screen = state.categoryId ? "category" : "home";
+      state.selectedCode = null;
+      redraw();
+    }
+    return;
+  }
+
+  const items = buildList();
+  if (type === "up") {
+    state.scrollIndex = Math.max(0, state.scrollIndex - 1);
+    redraw();
+  } else if (type === "down") {
+    state.scrollIndex = Math.min(items.length - 1, state.scrollIndex + 1);
+    redraw();
+  } else if (type === "select") {
+    const item = items[state.scrollIndex];
+    if (!item) return;
+    if (item.type === "folder") {
+      state.screen = "category";
+      state.categoryId = item.categoryId;
+      state.scrollIndex = 0;
+      redraw();
+    } else if (item.type === "code") {
+      state.screen = "barcode";
+      state.selectedCode = item.code;
+      redraw();
+    }
+  } else if (type === "back") {
+    if (state.screen === "category") {
+      state.screen = "home";
+      state.categoryId = null;
+      state.scrollIndex = 0;
+      redraw();
+    }
+  }
+}
