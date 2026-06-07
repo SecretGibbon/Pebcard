@@ -67,7 +67,7 @@ function drawList(items) {
   });
 
   if (items.length === 0) {
-    render.drawText("No items. Configure app.", render.Font("Gothic-Bold", FONT_SIZE),
+    render.drawText("No items. Configure app.", font,
       gray, 4, render.height / 2 - 10, render.width - 8, FONT_SIZE, 0);
   }
   render.end();
