@@ -1,0 +1,15 @@
+{
+  "include": [
+    "$(MODDABLE)/examples/manifest_mod.json",
+    "$(MODDABLE)/examples/manifest_typings.json"
+  ],
+  "modules": {
+    "*": "./main",
+    "storage": "./storage",
+    "renderer": "./renderer",
+    "renderers/qr": "./renderers/qr",
+    "renderers/code128": "./renderers/code128",
+    "renderers/ean13": "./renderers/ean13",
+    "renderers/unsupported": "./renderers/unsupported"
+  }
+}

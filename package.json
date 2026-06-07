@@ -1,0 +1,20 @@
+{
+  "name": "pebble-qr-wallet",
+  "author": "you",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "QR Wallet",
+    "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": ["emery", "gabbro"],
+    "watchapp": { "watchface": false },
+    "capabilities": ["configurable"],
+    "messageKeys": ["WALLET_JSON"],
+    "resources": { "media": [] }
+  }
+}
