@@ -21,16 +21,29 @@ function renderList() {
   wallet.categories.forEach(cat => {
     const div = document.createElement('div');
     div.className = 'item folder';
-    div.innerHTML = `<span>&#x1F4C1; ${cat.name} (${cat.codes.length})</span>
-      <button onclick="deleteCategory('${cat.id}')">Delete</button>`;
+    const span = document.createElement('span');
+    span.textContent = '\u{1F4C1} ' + cat.name + ' (' + cat.codes.length + ')';
+    const btn = document.createElement('button');
+    btn.textContent = 'Delete';
+    btn.addEventListener('click', () => deleteCategory(cat.id));
+    div.appendChild(span);
+    div.appendChild(btn);
     el.appendChild(div);
   });
 
   wallet.codes.forEach(code => {
     const div = document.createElement('div');
     div.className = 'item';
-    div.innerHTML = `<span>${code.name} <small>(${code.format})</small></span>
-      <button onclick="deleteCode('${code.id}', null)">Delete</button>`;
+    const span = document.createElement('span');
+    span.textContent = code.name + ' ';
+    const small = document.createElement('small');
+    small.textContent = '(' + code.format + ')';
+    span.appendChild(small);
+    const btn = document.createElement('button');
+    btn.textContent = 'Delete';
+    btn.addEventListener('click', () => deleteCode(code.id, null));
+    div.appendChild(span);
+    div.appendChild(btn);
     el.appendChild(div);
   });
 }
