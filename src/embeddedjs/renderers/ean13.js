@@ -17,7 +17,7 @@ const PARITY = [
 function checkDigit(digits12) {
   let odd = 0, even = 0;
   for (let i = 0; i < 12; i++) {
-    (i % 2 === 0 ? odd : even) += digits12[i];
+    if (i % 2 === 0) odd += digits12[i]; else even += digits12[i];
   }
   return (10 - ((odd + even * 3) % 10)) % 10;
 }
