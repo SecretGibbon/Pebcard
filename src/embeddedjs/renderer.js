@@ -1,8 +1,10 @@
-import { drawQR } from "renderers/qr";
+import { drawQR }      from "renderers/qr";
+import { drawCode128 } from "renderers/code128";
 
 export function drawBarcode(render, code) {
   switch (code.format) {
-    case "QR":    drawQR(render, code.data); break;
+    case "QR":      drawQR(render, code.data);      break;
+    case "CODE128": drawCode128(render, code.data); break;
     default:
       drawUnsupported(render, code.format);
   }
