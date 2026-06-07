@@ -77,9 +77,9 @@ function drawList(items) {
 function drawBarcode(code) {
   const font = render.Font("Gothic-Bold", 14);
   render.begin();
-  render.fillRectangle(render.makeColor(255,255,255), 0, 0, render.width, render.height);
-  render.drawText(code.name, font, render.makeColor(0,0,0), 4, 4, render.width - 8, 16, 0);
+  render.fillRectangle(white, 0, 0, render.width, render.height);
   renderCode(render, code);
+  render.drawText(code.name, font, black, 4, 4, render.width - 8, 16, 0);
   render.end();
 }
 
