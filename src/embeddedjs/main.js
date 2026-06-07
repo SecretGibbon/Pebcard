@@ -2,6 +2,7 @@ import Poco from "commodetto/Poco";
 import Button from "pebble/button";
 import Message from "pebble/message";
 import { loadWallet, saveWallet } from "storage";
+import { drawBarcode as renderCode } from "renderer";
 
 const render = new Poco(screen);
 const white = render.makeColor(255, 255, 255);
@@ -74,12 +75,11 @@ function drawList(items) {
 }
 
 function drawBarcode(code) {
+  const font = render.Font("Gothic-Bold", 14);
   render.begin();
-  render.fillRectangle(white, 0, 0, render.width, render.height);
-  render.drawText(code.name, render.Font("Gothic-Bold", 18), black,
-    4, 8, render.width - 8, 20, 0);
-  render.drawText("(rendering...)", render.Font("Gothic-Bold", 14), gray,
-    4, 40, render.width - 8, 18, 0);
+  render.fillRectangle(render.makeColor(255,255,255), 0, 0, render.width, render.height);
+  render.drawText(code.name, font, render.makeColor(0,0,0), 4, 4, render.width - 8, 16, 0);
+  renderCode(render, code);
   render.end();
 }
 
