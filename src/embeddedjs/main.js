@@ -117,7 +117,7 @@ function handleButton(type) {
     state.scrollIndex = Math.max(0, state.scrollIndex - 1);
     redraw();
   } else if (type === "down") {
-    state.scrollIndex = Math.min(items.length - 1, state.scrollIndex + 1);
+    state.scrollIndex = items.length > 0 ? Math.min(items.length - 1, state.scrollIndex + 1) : 0;
     redraw();
   } else if (type === "select") {
     const item = items[state.scrollIndex];
