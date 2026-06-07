@@ -51,7 +51,7 @@ export function drawCode128(render, data) {
   try {
     symbols = encode128(data);
   } catch (e) {
-    render.drawText("Invalid Code128", render.Font("Gothic-Bold", 14),
+    render.drawText("Invalid Code128", new render.Font("Gothic-Bold", 14),
       black, 4, Math.floor(render.height / 2), render.width - 8, 20, 0);
     return;
   }

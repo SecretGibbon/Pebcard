@@ -45,7 +45,7 @@ const ROW_H = 36;
 const FONT_SIZE = 18;
 
 function drawList(items) {
-  const font = render.Font("Gothic-Bold", FONT_SIZE);
+  const font = new render.Font("Gothic-Bold", FONT_SIZE);
   render.begin();
   render.fillRectangle(white, 0, 0, render.width, render.height);
 
@@ -75,7 +75,7 @@ function drawList(items) {
 }
 
 function drawBarcode(code) {
-  const font = render.Font("Gothic-Bold", 14);
+  const font = new render.Font("Gothic-Bold", 14);
   render.begin();
   render.fillRectangle(white, 0, 0, render.width, render.height);
   renderCode(render, code);

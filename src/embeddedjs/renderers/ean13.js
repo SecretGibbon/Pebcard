@@ -27,7 +27,7 @@ export function drawEAN13(render, data) {
 
   const digits = data.replace(/\D/g, '');
   if (digits.length !== 12 && digits.length !== 13) {
-    render.drawText("EAN-13: need 12-13 digits", render.Font("Gothic-Bold", 14),
+    render.drawText("EAN-13: need 12-13 digits", new render.Font("Gothic-Bold", 14),
       black, 4, Math.floor(render.height / 2), render.width - 8, 20, 0);
     return;
   }
@@ -58,6 +58,6 @@ export function drawEAN13(render, data) {
   }
 
   // Draw digit string below barcode
-  render.drawText(d.join(''), render.Font("Gothic-Bold", 12), black,
+  render.drawText(d.join(''), new render.Font("Gothic-Bold", 12), black,
     Math.floor((render.width - totalW) / 2), barcodeY + barcodeH + 4, totalW, 14, 0);
 }
