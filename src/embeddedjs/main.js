@@ -102,6 +102,24 @@ new Button({
   }
 });
 
+new Message({
+  keys: ["WALLET_JSON"],
+  onReadable() {
+    const msg = this.read();
+    msg.forEach((value, key) => {
+      if (key !== "WALLET_JSON") return;
+      try {
+        wallet = JSON.parse(value);
+        saveWallet(wallet);
+        state = { screen: "home", categoryId: null, scrollIndex: 0, selectedCode: null };
+        redraw();
+      } catch (e) {
+        console.log("bad wallet payload:", e.message);
+      }
+    });
+  }
+});
+
 function handleButton(type) {
   if (state.screen === "barcode") {
     if (type === "back") {
