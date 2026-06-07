@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR Wallet Config</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 16px; }
+    h1 { font-size: 1.2rem; margin-bottom: 8px; }
+    button { padding: 10px 16px; margin: 4px 0; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; }
+    button.primary { background: #0078d4; color: white; border-color: #0078d4; }
+    .item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
+    .folder { font-weight: bold; }
+    input, select { width: 100%; padding: 8px; margin: 4px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    #add-form { display: none; padding: 12px 0; }
+    #preview-canvas { display: block; margin: 8px auto; border: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <h1>QR Wallet</h1>
+  <div id="list-view">
+    <div id="items-list"></div>
+    <button onclick="showAddForm()">+ Add Code</button>
+    <button onclick="addCategory()">+ Add Category</button>
+    <hr>
+    <button class="primary" onclick="saveAndClose()">Save &amp; Close</button>
+  </div>
+
+  <div id="add-form">
+    <h2 style="font-size:1rem">Add Code</h2>
+    <button onclick="triggerCamera()">Take Photo</button>
+    <button onclick="triggerGallery()">Pick from Gallery</button>
+    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
+    <input type="file" id="gallery-input" accept="image/*" style="display:none">
+    <hr>
+    <label>Code Data</label>
+    <input type="text" id="code-data" placeholder="Enter code or scan above">
+    <label>Format</label>
+    <select id="code-format">
+      <option value="QR">QR Code</option>
+      <option value="AZTEC">Aztec</option>
+      <option value="CODE128">Code 128</option>
+      <option value="EAN13">EAN-13</option>
+      <option value="PDF417">PDF417</option>
+    </select>
+    <label>Name</label>
+    <input type="text" id="code-name" placeholder="e.g. Tesco Clubcard">
+    <label>Category (optional)</label>
+    <select id="code-category">
+      <option value="">None (root level)</option>
+    </select>
+    <canvas id="preview-canvas" width="160" height="160"></canvas>
+    <div id="preview-error" style="color:red;font-size:0.85rem"></div>
+    <button class="primary" onclick="confirmAdd()">Add</button>
+    <button onclick="cancelAdd()">Cancel</button>
+  </div>
+
+  <script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="config.js"></script>
+</body>
+</html>
