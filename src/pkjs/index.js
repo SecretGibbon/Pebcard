@@ -1,6 +1,4 @@
-// Replace YOUR_GITHUB_PAGES_URL before deploying to production.
-// For local testing: use ngrok or a local HTTPS server URL.
-const CONFIG_BASE = "https://YOUR_GITHUB_PAGES_URL/config/";
+const CONFIG_BASE = "https://secretgibbon.github.io/Pebcard/config/";
 
 Pebble.addEventListener("ready", () => {
   console.log("pkjs ready");
