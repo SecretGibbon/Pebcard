@@ -97,7 +97,11 @@ redraw();
 new Button({
   types: ["select", "up", "down", "back"],
   onPush(down, type) {
-    if (!down) return;
+    if (type === "back") {
+      if (down) return; // fire on release to catch short press
+    } else {
+      if (!down) return;
+    }
     handleButton(type);
   }
 });

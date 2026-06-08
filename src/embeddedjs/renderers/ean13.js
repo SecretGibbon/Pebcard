@@ -5,8 +5,9 @@ const L = ['0001101','0011001','0010011','0111101','0100011',
 // R-encoding: right half always
 const R = ['1110010','1100110','1101100','1000010','1011100',
            '1001110','1010000','1000100','1001000','1110100'];
-// G-encoding = reversed L
-const G = L.map(p => p.split('').reverse().join(''));
+// G-encoding = L reversed (precomputed to avoid XS chunk pressure from map/split/reverse)
+const G = ['1011000','1001100','1100100','1011110','1100010',
+           '1000110','1111010','1101110','1110110','1101000'];
 
 // Parity for first digit: which encoding (L or G) for each of 6 left digits
 const PARITY = [
@@ -58,6 +59,6 @@ export function drawEAN13(render, data) {
   }
 
   // Draw digit string below barcode
-  render.drawText(d.join(''), new render.Font("Gothic-Bold", 12), black,
-    Math.floor((render.width - totalW) / 2), barcodeY + barcodeH + 4, totalW, 14, 0);
+  render.drawText(d.join(''), new render.Font("Gothic-Bold", 14), black,
+    Math.floor((render.width - totalW) / 2), barcodeY + barcodeH + 4, totalW, 16, 0);
 }
