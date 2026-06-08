@@ -15,6 +15,15 @@
     "watchapp": { "watchface": false },
     "capabilities": ["configurable"],
     "messageKeys": ["WALLET_JSON"],
-    "resources": { "media": [] }
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "MENU_ICON",
+          "file": "resources/images/icon.png",
+          "menuIcon": true
+        }
+      ]
+    }
   }
 }
