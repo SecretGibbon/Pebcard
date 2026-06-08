@@ -32,10 +32,8 @@
   </div>
 
   <div id="add-form">
-    <h2 style="font-size:1rem">Add Code</h2>
-    <button onclick="triggerCamera()">Take Photo</button>
-    <button onclick="triggerGallery()">Pick from Gallery</button>
-    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
+    <h2 id="form-title" style="font-size:1rem">Add Code</h2>
+    <button onclick="triggerGallery()">Scan from Photo</button>
     <input type="file" id="gallery-input" accept="image/*" style="display:none">
     <hr>
     <label>Code Data</label>
@@ -56,7 +54,7 @@
     </select>
     <canvas id="preview-canvas" width="160" height="160"></canvas>
     <div id="preview-error" style="color:red;font-size:0.85rem"></div>
-    <button class="primary" onclick="confirmAdd()">Add</button>
+    <button id="save-btn" class="primary" onclick="confirmSave()">Add</button>
     <button onclick="cancelAdd()">Cancel</button>
   </div>
 

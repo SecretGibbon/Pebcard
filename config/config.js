@@ -1,4 +1,5 @@
 let wallet = { codes: [], categories: [] };
+let editState = null; // null = add mode; { code, categoryId } = edit mode
 
 (function init() {
   const params = new URLSearchParams(location.search);
@@ -8,7 +9,6 @@ let wallet = { codes: [], categories: [] };
   }
   renderList();
 
-  document.getElementById('camera-input').addEventListener('change', e => decodeFromFile(e.target.files[0]));
   document.getElementById('gallery-input').addEventListener('change', e => decodeFromFile(e.target.files[0]));
   document.getElementById('code-data').addEventListener('input', updatePreview);
   document.getElementById('code-format').addEventListener('change', updatePreview);
@@ -19,49 +19,88 @@ function renderList() {
   el.innerHTML = '';
 
   wallet.categories.forEach(cat => {
-    const div = document.createElement('div');
-    div.className = 'item folder';
+    const folderDiv = document.createElement('div');
+    folderDiv.className = 'item folder';
     const span = document.createElement('span');
-    span.textContent = '\u{1F4C1} ' + cat.name + ' (' + cat.codes.length + ')';
-    const btn = document.createElement('button');
-    btn.textContent = 'Delete';
-    btn.addEventListener('click', () => deleteCategory(cat.id));
-    div.appendChild(span);
-    div.appendChild(btn);
-    el.appendChild(div);
+    span.textContent = '\u{1F4C1} ' + cat.name;
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'Delete';
+    delBtn.addEventListener('click', () => deleteCategory(cat.id));
+    folderDiv.appendChild(span);
+    folderDiv.appendChild(delBtn);
+    el.appendChild(folderDiv);
+
+    cat.codes.forEach(code => {
+      el.appendChild(makeCodeRow(code, cat.id));
+    });
   });
 
   wallet.codes.forEach(code => {
-    const div = document.createElement('div');
-    div.className = 'item';
-    const span = document.createElement('span');
-    span.textContent = code.name + ' ';
-    const small = document.createElement('small');
-    small.textContent = '(' + code.format + ')';
-    span.appendChild(small);
-    const btn = document.createElement('button');
-    btn.textContent = 'Delete';
-    btn.addEventListener('click', () => deleteCode(code.id, null));
-    div.appendChild(span);
-    div.appendChild(btn);
-    el.appendChild(div);
+    el.appendChild(makeCodeRow(code, null));
   });
 }
 
+function makeCodeRow(code, categoryId) {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.style.paddingLeft = categoryId ? '16px' : '0';
+
+  const span = document.createElement('span');
+  span.textContent = code.name + ' ';
+  const small = document.createElement('small');
+  small.textContent = '(' + code.format + ')';
+  span.appendChild(small);
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.style.marginRight = '4px';
+  editBtn.addEventListener('click', () => showEditForm(code, categoryId));
+
+  const delBtn = document.createElement('button');
+  delBtn.textContent = 'Delete';
+  delBtn.addEventListener('click', () => deleteCode(code.id, categoryId));
+
+  div.appendChild(span);
+  div.appendChild(editBtn);
+  div.appendChild(delBtn);
+  return div;
+}
+
 function showAddForm() {
+  editState = null;
+  document.getElementById('form-title').textContent = 'Add Code';
+  document.getElementById('save-btn').textContent = 'Add';
   document.getElementById('list-view').style.display = 'none';
   document.getElementById('add-form').style.display = 'block';
   refreshCategorySelect();
   document.getElementById('code-data').value = '';
   document.getElementById('code-name').value = '';
+  document.getElementById('code-format').value = 'QR';
+  document.getElementById('code-category').value = '';
   document.getElementById('preview-error').textContent = '';
   const canvas = document.getElementById('preview-canvas');
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function showEditForm(code, categoryId) {
+  editState = { code, categoryId };
+  document.getElementById('form-title').textContent = 'Edit Code';
+  document.getElementById('save-btn').textContent = 'Save';
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('add-form').style.display = 'block';
+  refreshCategorySelect();
+  document.getElementById('code-data').value = code.data;
+  document.getElementById('code-name').value = code.name;
+  document.getElementById('code-format').value = code.format;
+  document.getElementById('code-category').value = categoryId || '';
+  document.getElementById('preview-error').textContent = '';
+  updatePreview();
+}
+
 function cancelAdd() {
   document.getElementById('add-form').style.display = 'none';
   document.getElementById('list-view').style.display = 'block';
+  editState = null;
 }
 
 function refreshCategorySelect() {
@@ -108,7 +147,7 @@ function deleteCode(id, categoryId) {
   renderList();
 }
 
-function confirmAdd() {
+function confirmSave() {
   const data   = document.getElementById('code-data').value.trim();
   const format = document.getElementById('code-format').value;
   const name   = document.getElementById('code-name').value.trim();
@@ -117,7 +156,12 @@ function confirmAdd() {
   if (!data) { alert('Enter code data.'); return; }
   if (!name) { alert('Enter a name.'); return; }
 
-  const code = { id: uid(), name, data, format };
+  if (editState) {
+    // remove from old location
+    deleteCode(editState.code.id, editState.categoryId);
+  }
+
+  const code = { id: editState ? editState.code.id : uid(), name, data, format };
   if (catId) {
     const cat = wallet.categories.find(c => c.id === catId);
     if (cat) cat.codes.push(code);
@@ -132,10 +176,6 @@ function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-function triggerCamera() {
-  document.getElementById('camera-input').click();
-}
-
 function triggerGallery() {
   document.getElementById('gallery-input').click();
 }
@@ -146,13 +186,25 @@ function decodeFromFile(file) {
   reader.onload = () => {
     const img = new Image();
     img.onload = async () => {
-      try {
-        const codeReader = new ZXing.BrowserMultiFormatReader();
+      const MAX = 1024;
+      let src = img;
+      if (img.width > MAX || img.height > MAX) {
+        const scale = MAX / Math.max(img.width, img.height);
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        canvas.getContext('2d').drawImage(img, 0, 0);
-        const result = await codeReader.decodeFromCanvas(canvas);
+        canvas.width  = Math.round(img.width  * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const scaled = new Image();
+        scaled.src = canvas.toDataURL();
+        await new Promise(r => { scaled.onload = r; });
+        src = scaled;
+      }
+
+      try {
+        const hints = new Map();
+        hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+        const codeReader = new ZXing.BrowserMultiFormatReader(hints);
+        const result = await codeReader.decodeFromImageElement(src);
         document.getElementById('code-data').value = result.getText();
         document.getElementById('code-format').value = zxingFormatToOurs(result.getBarcodeFormat());
         document.getElementById('preview-error').textContent = '';
