@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QR Wallet Config</title>
+  <title>Pebcard Config</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 16px; }
+    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 16px; background: #fff; color: #000; }
     h1 { font-size: 1.2rem; margin-bottom: 8px; }
     button { padding: 10px 16px; margin: 4px 0; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; }
     button.primary { background: #0078d4; color: white; border-color: #0078d4; }
@@ -17,11 +17,16 @@
   </style>
 </head>
 <body>
-  <h1>QR Wallet</h1>
+  <h1>Pebcard</h1>
   <div id="list-view">
     <div id="items-list"></div>
     <button onclick="showAddForm()">+ Add Code</button>
-    <button onclick="addCategory()">+ Add Category</button>
+    <button onclick="showAddCategoryForm()">+ Add Category</button>
+    <div id="add-category-form" style="display:none; padding: 8px 0;">
+      <input type="text" id="category-name" placeholder="Category name">
+      <button class="primary" onclick="confirmAddCategory()">Add</button>
+      <button onclick="cancelAddCategory()">Cancel</button>
+    </div>
     <hr>
     <button class="primary" onclick="saveAndClose()">Save &amp; Close</button>
   </div>

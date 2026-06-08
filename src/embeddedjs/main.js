@@ -151,7 +151,9 @@ function handleButton(type) {
       redraw();
     }
   } else if (type === "back") {
-    if (state.screen === "category") {
+    if (state.screen === "home") {
+      screen.close();
+    } else if (state.screen === "category") {
       state.screen = "home";
       state.categoryId = null;
       state.scrollIndex = 0;

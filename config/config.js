@@ -75,10 +75,21 @@ function refreshCategorySelect() {
   });
 }
 
-function addCategory() {
-  const name = prompt('Category name:');
+function showAddCategoryForm() {
+  document.getElementById('add-category-form').style.display = 'block';
+  document.getElementById('category-name').value = '';
+  document.getElementById('category-name').focus();
+}
+
+function cancelAddCategory() {
+  document.getElementById('add-category-form').style.display = 'none';
+}
+
+function confirmAddCategory() {
+  const name = document.getElementById('category-name').value.trim();
   if (!name) return;
   wallet.categories.push({ id: uid(), name, codes: [] });
+  cancelAddCategory();
   renderList();
 }
 
