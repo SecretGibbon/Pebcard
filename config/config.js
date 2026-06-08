@@ -168,8 +168,7 @@ function confirmSave() {
   } else {
     wallet.codes.push(code);
   }
-  cancelAdd();
-  renderList();
+  saveAndClose();
 }
 
 function uid() {
@@ -207,8 +206,8 @@ function decodeFromFile(file) {
         const result = await codeReader.decodeFromImageElement(src);
         document.getElementById('code-data').value = result.getText();
         document.getElementById('code-format').value = zxingFormatToOurs(result.getBarcodeFormat());
-        document.getElementById('preview-error').textContent = '';
         updatePreview();
+        document.getElementById('preview-error').textContent = '';
       } catch {
         document.getElementById('preview-error').textContent = 'No barcode found in image.';
       }

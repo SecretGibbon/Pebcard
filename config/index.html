@@ -34,7 +34,8 @@
   <div id="add-form">
     <h2 id="form-title" style="font-size:1rem">Add Code</h2>
     <button onclick="triggerGallery()">Scan from Photo</button>
-    <input type="file" id="gallery-input" accept="image/*" style="display:none">
+    <small style="display:block;color:#888;margin-bottom:4px">iOS: choose "Photo Library" — "Take Photo" crashes the app</small>
+    <input type="file" id="gallery-input" accept="image/png,image/jpeg,image/gif,image/webp" style="display:none">
     <hr>
     <label>Code Data</label>
     <input type="text" id="code-data" placeholder="Enter code or scan above">
