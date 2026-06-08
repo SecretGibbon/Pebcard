@@ -20,7 +20,7 @@
         {
           "type": "bitmap",
           "name": "MENU_ICON",
-          "file": "resources/images/icon.png",
+          "file": "images/icon.png",
           "menuIcon": true
         }
       ]
