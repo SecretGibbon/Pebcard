@@ -1,12 +1,12 @@
 {
-  "name": "pebble-qr-wallet",
+  "name": "pebcard",
   "author": "gibbon@email.cz",
   "version": "1.0.0",
   "keywords": ["pebble-app"],
   "private": true,
   "dependencies": {},
   "pebble": {
-    "displayName": "QR Wallet",
+    "displayName": "Pebcard",
     "uuid": "f7c3a9e2-4b81-4d56-9a2f-c3e8b7d10f45",
     "projectType": "moddable",
     "sdkVersion": "3",
