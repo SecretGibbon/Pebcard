@@ -152,7 +152,7 @@ function handleButton(type) {
     }
   } else if (type === "back") {
     if (state.screen === "home") {
-      screen.close();
+      application.close();
     } else if (state.screen === "category") {
       state.screen = "home";
       state.categoryId = null;
