@@ -10,7 +10,7 @@ export function drawQR(render, data) {
   const bitmap = new Bitmap(code.size, code.size, Bitmap.MonochromeAligned, code, 0);
 
   render.drawMonochrome(
-    bitmap, black, white,
+    bitmap, white, black,
     (render.width - bitmap.width) >> 1,
     (render.height - bitmap.height) >> 1
   );
