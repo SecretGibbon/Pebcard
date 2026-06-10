@@ -6,7 +6,7 @@ export function drawQR(render, data) {
   const white = render.makeColor(255, 255, 255);
   const size = Math.min(render.width, render.height) - 20;
 
-  const code = qrCode({ input: data, bitmap: 32, fit: size });
+  const code = qrCode({ input: data, bitmap: size, fit: size });
   const bitmap = new Bitmap(code.size, code.size, Bitmap.MonochromeAligned, code, 0);
 
   render.drawMonochrome(
