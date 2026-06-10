@@ -1,4 +1,5 @@
 import Poco from "commodetto/Poco";
+import Timer from "timer";
 import Button from "pebble/button";
 import Message from "pebble/message";
 import { loadWallet, saveWallet } from "storage";
@@ -44,13 +45,21 @@ function buildList() {
 const ROW_H = 36;
 const FONT_SIZE = 18;
 
+function centeredOffset(selectedIndex, itemCount) {
+  const visible = Math.floor(render.height / ROW_H);
+  const maxOffset = Math.max(0, itemCount - visible);
+  const offset = selectedIndex - Math.floor(visible / 2);
+  return Math.max(0, Math.min(offset, maxOffset));
+}
+
 function drawList(items) {
   const font = new render.Font("Gothic-Bold", FONT_SIZE);
+  const offset = centeredOffset(state.scrollIndex, items.length);
   render.begin();
   render.fillRectangle(white, 0, 0, render.width, render.height);
 
   items.forEach((item, i) => {
-    const y = i * ROW_H - state.scrollIndex * ROW_H;
+    const y = i * ROW_H - offset * ROW_H;
     if (y + ROW_H < 0 || y >= render.height) return;
 
     const isSelected = i === state.scrollIndex;
@@ -94,11 +103,30 @@ function redraw() {
 
 redraw();
 
+let repeatTimer = null;
+
+function stopRepeat() {
+  if (repeatTimer !== null) {
+    Timer.clear(repeatTimer);
+    repeatTimer = null;
+  }
+}
+
 new Button({
   types: ["select", "up", "down", "back"],
   onPush(down, type) {
+    if (type === "up" || type === "down") {
+      if (down) {
+        handleButton(type);
+        stopRepeat();
+        repeatTimer = Timer.repeat(() => handleButton(type), 200);
+      } else {
+        stopRepeat();
+      }
+      return;
+    }
     if (type === "back") {
-      if (down) return; // fire on release to catch short press
+      if (down) return;
     } else {
       if (!down) return;
     }
