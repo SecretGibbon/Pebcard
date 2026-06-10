@@ -77,6 +77,7 @@ function showAddForm() {
   document.getElementById('code-name').value = '';
   document.getElementById('code-format').value = 'QR';
   document.getElementById('code-category').value = '';
+  document.getElementById('code-ec-level').value = 'M';
   document.getElementById('preview-error').textContent = '';
   const canvas = document.getElementById('preview-canvas');
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -93,6 +94,7 @@ function showEditForm(code, categoryId) {
   document.getElementById('code-name').value = code.name;
   document.getElementById('code-format').value = code.format;
   document.getElementById('code-category').value = categoryId || '';
+  document.getElementById('code-ec-level').value = code.ecLevel || 'M';
   document.getElementById('preview-error').textContent = '';
   updatePreview();
 }
@@ -148,10 +150,11 @@ function deleteCode(id, categoryId) {
 }
 
 function confirmSave() {
-  const data   = document.getElementById('code-data').value.trim();
-  const format = document.getElementById('code-format').value;
-  const name   = document.getElementById('code-name').value.trim();
-  const catId  = document.getElementById('code-category').value;
+  const data    = document.getElementById('code-data').value.trim();
+  const format  = document.getElementById('code-format').value;
+  const name    = document.getElementById('code-name').value.trim();
+  const catId   = document.getElementById('code-category').value;
+  const ecLevel = document.getElementById('code-ec-level').value || 'M';
 
   if (!data) { alert('Enter code data.'); return; }
   if (!name) { alert('Enter a name.'); return; }
@@ -161,7 +164,7 @@ function confirmSave() {
     deleteCode(editState.code.id, editState.categoryId);
   }
 
-  const code = { id: editState ? editState.code.id : uid(), name, data, format };
+  const code = { id: editState ? editState.code.id : uid(), name, data, format, ecLevel };
   if (catId) {
     const cat = wallet.categories.find(c => c.id === catId);
     if (cat) cat.codes.push(code);
@@ -206,6 +209,9 @@ function decodeFromFile(file) {
         const result = await codeReader.decodeFromImageElement(src);
         document.getElementById('code-data').value = result.getText();
         document.getElementById('code-format').value = zxingFormatToOurs(result.getBarcodeFormat());
+        const meta = result.getResultMetadata();
+        const ecRaw = meta && meta.get(ZXing.ResultMetadataType.ERROR_CORRECTION_LEVEL);
+        document.getElementById('code-ec-level').value = ecRaw || 'M';
         updatePreview();
         document.getElementById('preview-error').textContent = '';
       } catch {
@@ -239,7 +245,8 @@ function updatePreview() {
 
   try {
     if (format === 'QR') {
-      QRCode.toCanvas(canvas, data, { width: 160, errorCorrectionLevel: 'M' });
+      const ecLevel = document.getElementById('code-ec-level').value || 'M';
+      QRCode.toCanvas(canvas, data, { width: 160, errorCorrectionLevel: ecLevel });
     } else if (format === 'EAN13' || format === 'CODE128') {
       JsBarcode(canvas, data, {
         format: format === 'EAN13' ? 'EAN13' : 'CODE128',
