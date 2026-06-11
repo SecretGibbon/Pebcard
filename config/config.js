@@ -164,8 +164,10 @@ function confirmSave() {
   const code = { id: editState ? editState.code.id : uid(), name, data, format };
   if (format === 'QR') {
     try {
-      const qr = QRCode.create(data, { errorCorrectionLevel: 'M' });
-      code.qrModules = { size: qr.modules.size, hex: packModules(qr.modules) };
+      const qr = qrcode(0, 'M');
+      qr.addData(data, 'Byte');
+      qr.make();
+      code.qrModules = { size: qr.getModuleCount(), hex: packModules(qr) };
     } catch (e) {}
   }
   if (catId) {
@@ -177,15 +179,16 @@ function confirmSave() {
   saveAndClose();
 }
 
-function packModules(modules) {
-  const n = modules.size * modules.size;
-  const byteCount = Math.ceil(n / 8);
+function packModules(qr) {
+  const n = qr.getModuleCount();
+  const total = n * n;
+  const byteCount = Math.ceil(total / 8);
   let hex = '';
   for (let b = 0; b < byteCount; b++) {
     let byte = 0;
     for (let bit = 0; bit < 8; bit++) {
       const idx = b * 8 + bit;
-      if (idx < n && modules.data[idx]) byte |= (1 << (7 - bit));
+      if (idx < total && qr.isDark(Math.floor(idx / n), idx % n)) byte |= (1 << (7 - bit));
     }
     hex += byte.toString(16).padStart(2, '0');
   }
@@ -260,7 +263,17 @@ function updatePreview() {
 
   try {
     if (format === 'QR') {
-      QRCode.toCanvas(canvas, data, { width: 160, errorCorrectionLevel: 'M' });
+      const qr = qrcode(0, 'M');
+      qr.addData(data, 'Byte');
+      qr.make();
+      const n = qr.getModuleCount();
+      const cell = Math.floor(160 / n);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, 160, 160);
+      ctx.fillStyle = '#000';
+      for (let r = 0; r < n; r++)
+        for (let c = 0; c < n; c++)
+          if (qr.isDark(r, c)) ctx.fillRect(c * cell, r * cell, cell, cell);
     } else if (format === 'EAN13' || format === 'CODE128') {
       JsBarcode(canvas, data, {
         format: format === 'EAN13' ? 'EAN13' : 'CODE128',
