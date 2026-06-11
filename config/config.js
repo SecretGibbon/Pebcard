@@ -162,6 +162,12 @@ function confirmSave() {
   }
 
   const code = { id: editState ? editState.code.id : uid(), name, data, format };
+  if (format === 'QR') {
+    try {
+      const qr = QRCode.create(data, { errorCorrectionLevel: 'M' });
+      code.qrModules = { size: qr.modules.size, hex: packModules(qr.modules) };
+    } catch (e) {}
+  }
   if (catId) {
     const cat = wallet.categories.find(c => c.id === catId);
     if (cat) cat.codes.push(code);
@@ -169,6 +175,21 @@ function confirmSave() {
     wallet.codes.push(code);
   }
   saveAndClose();
+}
+
+function packModules(modules) {
+  const n = modules.size * modules.size;
+  const byteCount = Math.ceil(n / 8);
+  let hex = '';
+  for (let b = 0; b < byteCount; b++) {
+    let byte = 0;
+    for (let bit = 0; bit < 8; bit++) {
+      const idx = b * 8 + bit;
+      if (idx < n && modules.data[idx]) byte |= (1 << (7 - bit));
+    }
+    hex += byte.toString(16).padStart(2, '0');
+  }
+  return hex;
 }
 
 function uid() {

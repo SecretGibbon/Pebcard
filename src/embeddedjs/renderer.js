@@ -5,7 +5,7 @@ import { drawUnsupported } from "renderers/unsupported";
 
 export function drawBarcode(render, code) {
   switch (code.format) {
-    case "QR":      drawQR(render, code.data);           break;
+    case "QR":      drawQR(render, code);                 break;
     case "CODE128": drawCode128(render, code.data);      break;
     case "EAN13":   drawEAN13(render, code.data);        break;
     case "AZTEC":
